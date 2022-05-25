@@ -1,5 +1,4 @@
 package com.example.time;
-//--------------------------------------------------
 
 import androidx.appcompat.app.AlertDialog;
 
@@ -11,9 +10,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
-
-
-//---------------------------------------------------
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -53,14 +49,7 @@ public class MainActivity extends AppCompatActivity {
     EditText check;
     long test;
 
-
-    // ----------------------------------------
     LinearLayout mLinearLayout;
-    // -----------------------------------------
-
-
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,9 +58,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         check = findViewById(R.id.check);
-
-        // -------------------------------------------------
-
 
 
         Button Show = findViewById(R.id.bt_show);
@@ -119,7 +105,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // -------------------------------------------------
+        
+        
 
         final Boolean[] settingDuration = {false};
 
@@ -604,7 +591,6 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    // -----------------------------------------------------
     private void alert(String message){
         AlertDialog dig = new AlertDialog.Builder(MainActivity.this)
                 .setTitle("Message")
@@ -619,7 +605,7 @@ public class MainActivity extends AppCompatActivity {
                 .create();
         dig.show();
     }
-    // ----------------------------------------------------
+
 
     @Override
     protected void onStart() {
