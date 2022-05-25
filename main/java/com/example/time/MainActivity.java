@@ -9,6 +9,7 @@ import java.sql.Time;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 import android.content.Context;
@@ -30,6 +31,17 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.time.model.getDataService;
+import com.example.time.model.item;
+import com.example.time.model.retrofitClientInstance;
+import com.example.time.model.weatherDataModel;
+import org.json.JSONObject;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import android.util.Log;
+
 public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration appBarConfiguration;
@@ -42,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
     final String HOURS_KEY = "Hours sharedPreferences";
     final String FIFTY_NINE = "59";
     final String ZERO = "00";
+    public  String result;
     TextView hours_output, minutes_output, seconds_output;
     EditText hours_input, minutes_input, seconds_input;
     Button setDuration;
@@ -97,6 +110,59 @@ public class MainActivity extends AppCompatActivity {
 
                         // TODO: Call WEATHER API HERE
                         // EXTRACT API
+                        //API
+                        Retrofit retrofit= retrofitClientInstance.getRetrofitInstance();
+                        getDataService api=retrofit.create(getDataService.class);
+                        Call<weatherDataModel> call =api.getData(formattedDate);//date param
+
+
+                        call.enqueue(new Callback<weatherDataModel>() {
+                            @Override
+                            public void onResponse(Call<weatherDataModel> call, Response<weatherDataModel> response) {
+
+
+
+                                if (response.isSuccessful()) {
+
+                                    Log.i("response status","yay,response successful");
+                                    weatherDataModel data=response.body();
+                                    List<item> itemList= data.getItems();
+                                    //always get latest entry for changi
+                                    String weather=itemList.get(itemList.size()-1).getChangiForecast().getWeather();
+
+                                    Log.i("weather",weather);
+                                    Log.i("raining?", String.valueOf(weather.contains("Showers")));
+                                    result=String.valueOf(weather.contains("Showers"));
+
+                                } else {
+
+
+                                    Log.i("response status","response not successful");
+                                    try {
+
+                                        Log.i("response status", String.valueOf(response.code()));
+                                        JSONObject jObjError = new JSONObject(response.errorBody().string());
+                                        Log.i("response status", jObjError.getJSONObject("error").getString("message"));
+                                        result="error ";
+
+                                    } catch (Exception e) {
+                                        Log.i("response status",e.getMessage());
+
+                                    }
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<weatherDataModel> call, Throwable t) {
+                                Log.i("response status","network failure");
+                                result="error";
+
+                            }
+                        });
+                        //end of API
+                        //TODO:
+                        //handle result=true and result=false
+                        //handle result=error->display error msg text or stg on next pg
 
                         mLinearLayout.setBackgroundResource(R.drawable.sunny);
                         alert(displayMsg);
