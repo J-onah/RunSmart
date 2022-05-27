@@ -357,13 +357,22 @@ public class MainActivity extends AppCompatActivity {
                         }
                         hours_output.setText(hours);
                         hours_input.setText(hours);
+                        
+                        if (Integer.parseInt(hours) > 0){ 
+                            thereIsHours[0] = true;
+                        }
 
                         minutes = String.valueOf(Integer.parseInt(checkMinutes) - (60 * (Integer.parseInt(checkMinutes) / 60)) );
                         if(minutes.length() < 2) {
                             minutes = "0" + minutes;
                         }
+                        
                         minutes_output.setText(minutes);
                         minutes_input.setText(minutes);
+                        
+                        if (Integer.parseInt(minutes) > 0){  
+                            thereIsMinutes[0] = true;
+                        }
 
                         seconds_output.setText(ZERO);
                         seconds_input.setText(ZERO);
@@ -544,6 +553,7 @@ public class MainActivity extends AppCompatActivity {
                         check.setText(String.valueOf(Integer.parseInt(hours_output.getText().toString()) * 60 + Integer.parseInt(minutes_output.getText().toString())));
 
                         settingDuration[0] = false;
+                        changedInput = false; 
                     }
                 }
 
