@@ -64,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
     EditText check;
     long test;
     TextView guide;
-
+    boolean changedInput=false;
 
     LinearLayout mLinearLayout;
 
@@ -314,6 +314,21 @@ public class MainActivity extends AppCompatActivity {
             thereIsMinutes[0] = true;
         }
 
+        check.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                changedInput = false;
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                changedInput = true;
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+            }
+        });
 
 
         setDuration.setOnClickListener(new View.OnClickListener() {
@@ -329,25 +344,10 @@ public class MainActivity extends AppCompatActivity {
                 if (countDownTimer != null) {
                     countDownTimer.cancel();
                 }
-
-                if (settingDuration[0] == false) {
-
-                    hours_output.setVisibility(View.INVISIBLE);
-                    minutes_output.setVisibility(View.INVISIBLE);
-                    seconds_output.setVisibility(View.INVISIBLE);
-
-                    hours_text = hours_output.getText().toString();
-                    minutes_text = minutes_output.getText().toString();
-                    seconds_text = seconds_output.getText().toString();
-
-                    hours_input.setText(hours_text);
-                    minutes_input.setText(minutes_text);
-                    seconds_input.setText(seconds_text);
-
-                    hours_input.setVisibility(View.VISIBLE);
-                    minutes_input.setVisibility(View.VISIBLE);
-                    seconds_input.setVisibility(View.VISIBLE);
-
+                if(changedInput==true){
+                    changedInput=false;
+                    settingDuration[0]=false;
+                    check.clearFocus();
                     String checkMinutes = check.getText().toString();
                     String hours, minutes;
                     if(!checkMinutes.equals("")){
@@ -367,7 +367,33 @@ public class MainActivity extends AppCompatActivity {
 
                         seconds_output.setText(ZERO);
                         seconds_input.setText(ZERO);
+                        hours_input.setVisibility(View.INVISIBLE);
+                        minutes_input.setVisibility(View.INVISIBLE);
+                        seconds_input.setVisibility(View.INVISIBLE);
+                        hours_output.setVisibility(View.VISIBLE);
+                        minutes_output.setVisibility(View.VISIBLE);
+                        seconds_output.setVisibility(View.VISIBLE);
                     }
+                }
+                else if (settingDuration[0] == false) {
+
+                    hours_output.setVisibility(View.INVISIBLE);
+                    minutes_output.setVisibility(View.INVISIBLE);
+                    seconds_output.setVisibility(View.INVISIBLE);
+
+                    hours_text = hours_output.getText().toString();
+                    minutes_text = minutes_output.getText().toString();
+                    seconds_text = seconds_output.getText().toString();
+
+                    hours_input.setText(hours_text);
+                    minutes_input.setText(minutes_text);
+                    seconds_input.setText(seconds_text);
+
+                    hours_input.setVisibility(View.VISIBLE);
+                    minutes_input.setVisibility(View.VISIBLE);
+                    seconds_input.setVisibility(View.VISIBLE);
+
+                    
 
 
                     //https://stackoverflow.com/questions/11369479/how-to-detect-when-user-leaves-an-edittext
