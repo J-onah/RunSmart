@@ -132,7 +132,7 @@ public class MainActivity extends AppCompatActivity {
                 String formattedDate = df.format(c);
 
                 if(Text.isEmpty()){
-                    mLinearLayout.setBackgroundResource(R.drawable.rain);
+                    mLinearLayout.setBackgroundResource(R.drawable.main);
                     alert("Please enter a valid input!");
                 }
                 else {
