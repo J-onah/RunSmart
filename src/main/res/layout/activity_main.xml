@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/bg"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    tools:context=".MainActivity"
+    android:background="@drawable/main"
+    >
+
+    <TextClock
+        android:id="@+id/worldtime"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textSize="70sp"
+        android:textColor="@color/white"/>
+
+    <LinearLayout android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="100sp">
+
+        <EditText
+            android:id="@+id/check"
+            android:inputType="number"
+            android:layout_width="200sp"
+            android:layout_height="100sp"
+            android:layout_gravity="bottom|center_horizontal"
+            android:layout_marginLeft="80sp"
+            android:gravity="bottom"
+            android:hint="Number of minutes"
+            android:textColorHint="@color/white"
+            android:textColor="@color/white"></EditText>
+
+        <Button
+            android:id="@+id/bt_show"
+            android:text="Submit"
+            android:textColor="@color/white"
+            android:textSize="11sp"
+            android:layout_marginLeft="15sp"
+            android:layout_width="80sp"
+            android:layout_height="70sp"
+            android:layout_gravity="center">
+        </Button>
+
+    </LinearLayout>
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Please Enter Your Running Duration"
+        android:textColor="@color/white"
+        android:gravity="center">
+    </TextView>
+
+</LinearLayout>
