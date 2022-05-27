@@ -75,6 +75,17 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        
+        int r = 1;
+
+        if(r==1){
+            alert("Before you begin, please follow this:" + "\r\n" + "\r\n" +
+                    "1) Type in your desired running duration." + "\r\n" +
+                    "2) Check Forecast [Press the button] within this duration." + "\r\n" +
+                    "3) Display will change into rainy/clear background depending on weather status" + "\r\n" +
+                    "4) Set Timer to begin the run!");
+        }
+        
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
