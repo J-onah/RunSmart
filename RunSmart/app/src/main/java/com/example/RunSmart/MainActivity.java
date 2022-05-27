@@ -205,12 +205,12 @@ public class MainActivity extends AppCompatActivity {
                             if (result.equals("true")) {
                                 alert( "You have chosen to run a duration of "  + displayMsg + ". It's raining now, please run another time!");
                                 mLinearLayout.setBackgroundResource(R.drawable.rain);
-                                hours_output.setTextColor(Color.parseColor("#FFFFFFFF"));
-                                hours_input.setTextColor(Color.parseColor("#FFFFFFFF"));
-                                minutes_output.setTextColor(Color.parseColor("#FFFFFFFF"));
-                                minutes_input.setTextColor(Color.parseColor("#FFFFFFFF"));
-                                seconds_output.setTextColor(Color.parseColor("#FFFFFFFF"));
-                                seconds_input.setTextColor(Color.parseColor("#FFFFFFFF"));
+                                hours_output.setTextColor(Color.parseColor("#FF000000"));
+                                hours_input.setTextColor(Color.parseColor("#FF000000"));
+                                minutes_output.setTextColor(Color.parseColor("#FF000000"));
+                                minutes_input.setTextColor(Color.parseColor("#FF000000"));
+                                seconds_output.setTextColor(Color.parseColor("#FF000000"));
+                                seconds_input.setTextColor(Color.parseColor("#FF000000"));
                             } else if (result.equals("false")) {
                                 alert( "You have chosen to run a duration of "  + displayMsg + ". It's a good weather, have a good run!");
                                 mLinearLayout.setBackgroundResource(R.drawable.sunny);
