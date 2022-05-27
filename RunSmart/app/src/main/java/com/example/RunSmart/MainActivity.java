@@ -63,6 +63,7 @@ public class MainActivity extends AppCompatActivity {
     Calendar calendar = Calendar.getInstance();
     EditText check;
     long test;
+    TextView guide;
 
 
     LinearLayout mLinearLayout;
@@ -112,6 +113,8 @@ public class MainActivity extends AppCompatActivity {
         seconds_output = findViewById(R.id.seconds_output);
 
         setDuration = findViewById(R.id.setDuration);
+        
+        guide = findViewById(R.id.guide);
 
 
         Show.setOnClickListener(new View.OnClickListener() {
@@ -211,6 +214,10 @@ public class MainActivity extends AppCompatActivity {
                                 minutes_input.setTextColor(Color.parseColor("#FF000000"));
                                 seconds_output.setTextColor(Color.parseColor("#FF000000"));
                                 seconds_input.setTextColor(Color.parseColor("#FF000000"));
+                                
+                                check.setTextColor(Color.parseColor("#FF000000"));
+                                guide.setTextColor(Color.parseColor("#FF000000"));
+                                
                             } else if (result.equals("false")) {
                                 alert( "You have chosen to run a duration of "  + displayMsg + ". It's a good weather, have a good run!");
                                 mLinearLayout.setBackgroundResource(R.drawable.sunny);
@@ -220,6 +227,10 @@ public class MainActivity extends AppCompatActivity {
                                 minutes_input.setTextColor(Color.parseColor("#FF000000"));
                                 seconds_output.setTextColor(Color.parseColor("#FF000000"));
                                 seconds_input.setTextColor(Color.parseColor("#FF000000"));
+                                
+                                check.setTextColor(Color.parseColor("#FF000000"));
+                                guide.setTextColor(Color.parseColor("#FF000000"));
+                                
                             } else {
                                 mLinearLayout.setBackgroundResource(R.drawable.main);
                                 Toast.makeText(getApplicationContext(), "Error! Please try again later.", Toast.LENGTH_SHORT).show();
