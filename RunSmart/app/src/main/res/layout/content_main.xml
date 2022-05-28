@@ -54,7 +54,7 @@
 
     <Button
         android:id="@+id/bt_show"
-        android:text="Submit"
+        android:text="Check Forecast"
         android:textColor="@color/white"
         android:textSize="11sp"
         android:layout_marginEnd="15sp"
