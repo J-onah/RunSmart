@@ -122,6 +122,8 @@ public class MainActivity extends AppCompatActivity {
         seconds_output = findViewById(R.id.seconds_output);
 
         setDuration = findViewById(R.id.setDuration);
+        
+        alert("Made by:\n- Lian Qi Zhi\n- Vinny Koh\n- Jonah Yeo");
 
 
         Show.setOnClickListener(new View.OnClickListener() {
