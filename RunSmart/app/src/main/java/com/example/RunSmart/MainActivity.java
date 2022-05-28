@@ -66,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
     EditText check;
     long test;
     TextView guide;
-    TextView colon_betw_hours_min, colon_betw_min_sec; // ==============================================
+    TextView colon_betw_hours_min, colon_betw_min_sec; 
 
     boolean changedInput = false;
 
@@ -109,8 +109,8 @@ public class MainActivity extends AppCompatActivity {
 
         guide = findViewById(R.id.guide);
 
-        colon_betw_hours_min = findViewById(R.id.colon_betw_hours_min); // ==============================
-        colon_betw_min_sec = findViewById(R.id.colon_betw_min_sec); // =============================
+        colon_betw_hours_min = findViewById(R.id.colon_betw_hours_min);
+        colon_betw_min_sec = findViewById(R.id.colon_betw_min_sec);
 
         hours_input = findViewById(R.id.hours_input);
         hours_output = findViewById(R.id.hours_output);
@@ -141,9 +141,7 @@ public class MainActivity extends AppCompatActivity {
                 if(Text.isEmpty()){
                     mLinearLayout.setBackgroundResource(R.drawable.main);
                     alert("Please enter a valid input!");
-
-                    // ====================================================================================================
-
+                  
                     guide.setTextColor(Color.parseColor("#FFFFFFFF"));
                     check.setTextColor(Color.parseColor("#FFFFFFFF"));
                     hours_output.setTextColor(Color.parseColor("#FFFFFFFF"));
@@ -156,8 +154,6 @@ public class MainActivity extends AppCompatActivity {
                     check.setHintTextColor(Color.parseColor("#FFFFFFFF"));
                     colon_betw_hours_min.setTextColor(Color.parseColor("#FFFFFFFF"));
                     colon_betw_min_sec.setTextColor(Color.parseColor("#FFFFFFFF"));
-
-                    // ========================================================================================================
 
                 }
                 else {
@@ -243,9 +239,9 @@ public class MainActivity extends AppCompatActivity {
                                 seconds_input.setTextColor(Color.parseColor("#FF000000"));
 
 
-                                check.setHintTextColor(Color.parseColor("#6F000000")); // =========================================
-                                colon_betw_hours_min.setTextColor(Color.parseColor("#FF000000")); // =======================================
-                                colon_betw_min_sec.setTextColor(Color.parseColor("#FF000000")); // ========================================
+                                check.setHintTextColor(Color.parseColor("#6F000000")); 
+                                colon_betw_hours_min.setTextColor(Color.parseColor("#FF000000"));
+                                colon_betw_min_sec.setTextColor(Color.parseColor("#FF000000"));
                             } else if (result.equals("false")) {
                                 alert( "You have chosen to run a duration of "  + displayMsg + ". It's a good weather, have a good run!");
                                 mLinearLayout.setBackgroundResource(R.drawable.sunny);
@@ -258,9 +254,9 @@ public class MainActivity extends AppCompatActivity {
                                 seconds_output.setTextColor(Color.parseColor("#FF000000"));
                                 seconds_input.setTextColor(Color.parseColor("#FF000000"));
 
-                                check.setHintTextColor(Color.parseColor("#6F000000")); // =========================================
-                                colon_betw_hours_min.setTextColor(Color.parseColor("#FF000000")); // ========================================
-                                colon_betw_min_sec.setTextColor(Color.parseColor("#FF000000")); // ========================================
+                                check.setHintTextColor(Color.parseColor("#6F000000"));
+                                colon_betw_hours_min.setTextColor(Color.parseColor("#FF000000")); 
+                                colon_betw_min_sec.setTextColor(Color.parseColor("#FF000000")); 
                             } else {
                                 mLinearLayout.setBackgroundResource(R.drawable.main);
                                 Toast.makeText(getApplicationContext(), "Error! Please try again later.", Toast.LENGTH_SHORT).show();
@@ -751,8 +747,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                //if(hasStop[0] == false) {
-                // ======================================================================
+      
                 if (countDownTimer != null) {
                     countDownTimer.cancel();
                 }
@@ -767,7 +762,6 @@ public class MainActivity extends AppCompatActivity {
                 hours_output.setText(ZERO);
                 hours_input.setText(ZERO);
 
-                // ====================================================================
 
             }
 
