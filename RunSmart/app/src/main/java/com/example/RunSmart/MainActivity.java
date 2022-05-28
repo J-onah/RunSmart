@@ -64,6 +64,7 @@ public class MainActivity extends AppCompatActivity {
     EditText check;
     long test;
     TextView guide;
+    TextView colon_betw_hours_min, colon_betw_min_sec;
     boolean changedInput=false;
 
     LinearLayout mLinearLayout;
@@ -126,6 +127,10 @@ public class MainActivity extends AppCompatActivity {
         setDuration = findViewById(R.id.setDuration);
         
         guide = findViewById(R.id.guide);
+        
+        colon_betw_hours_min = findViewById(R.id.colon_betw_hours_min); 
+        colon_betw_min_sec = findViewById(R.id.colon_betw_min_sec); 
+
 
 
         Show.setOnClickListener(new View.OnClickListener() {
@@ -145,6 +150,20 @@ public class MainActivity extends AppCompatActivity {
                 if(Text.isEmpty()){
                     mLinearLayout.setBackgroundResource(R.drawable.main);
                     alert("Please enter a valid input!");
+                    
+                    guide.setTextColor(Color.parseColor("#FFFFFFFF"));
+                    check.setTextColor(Color.parseColor("#FFFFFFFF"));
+                    hours_output.setTextColor(Color.parseColor("#FFFFFFFF"));
+                    hours_input.setTextColor(Color.parseColor("#FFFFFFFF"));
+                    minutes_output.setTextColor(Color.parseColor("#FFFFFFFF"));
+                    minutes_input.setTextColor(Color.parseColor("#FFFFFFFF"));
+                    seconds_output.setTextColor(Color.parseColor("#FFFFFFFF"));
+                    seconds_input.setTextColor(Color.parseColor("#FFFFFFFF"));
+
+                    check.setHintTextColor(Color.parseColor("#FFFFFFFF"));
+                    colon_betw_hours_min.setTextColor(Color.parseColor("#FFFFFFFF"));
+                    colon_betw_min_sec.setTextColor(Color.parseColor("#FFFFFFFF"));
+                    
                 }
                 else {
 
@@ -229,6 +248,10 @@ public class MainActivity extends AppCompatActivity {
                                 check.setTextColor(Color.parseColor("#FF000000"));
                                 guide.setTextColor(Color.parseColor("#FF000000"));
                                 
+                                check.setHintTextColor(Color.parseColor("#6F000000")); 
+                                colon_betw_hours_min.setTextColor(Color.parseColor("#FF000000")); 
+                                colon_betw_min_sec.setTextColor(Color.parseColor("#FF000000")); 
+                                
                             } else if (result.equals("false")) {
                                 alert( "You have chosen to run a duration of "  + displayMsg + ". It's a good weather, have a good run!");
                                 mLinearLayout.setBackgroundResource(R.drawable.sunny);
@@ -241,6 +264,10 @@ public class MainActivity extends AppCompatActivity {
                                 
                                 check.setTextColor(Color.parseColor("#FF000000"));
                                 guide.setTextColor(Color.parseColor("#FF000000"));
+                                
+                                check.setHintTextColor(Color.parseColor("#6F000000")); 
+                                colon_betw_hours_min.setTextColor(Color.parseColor("#FF000000")); 
+                                colon_betw_min_sec.setTextColor(Color.parseColor("#FF000000")); 
                                 
                             } else {
                                 mLinearLayout.setBackgroundResource(R.drawable.main);
@@ -729,19 +756,20 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                if(hasStop[0] == false) {
-                    if (countDownTimer != null) {
-                        countDownTimer.cancel();
-                        hasStop[0] = true;
-                        hasPlay[0] = false;
-                        seconds_output.setText(ZERO);
-                        seconds_input.setText(ZERO);
-                        minutes_output.setText(ZERO);
-                        minutes_input.setText(ZERO);
-                        hours_output.setText(ZERO);
-                        hours_input.setText(ZERO);
-                    }
+                if (countDownTimer != null) {
+                    countDownTimer.cancel();
                 }
+
+                hasStop[0] = true;
+                hasPause[0] = false;
+                hasPlay[0] = false;
+                seconds_output.setText(ZERO);
+                seconds_input.setText(ZERO);
+                minutes_output.setText(ZERO);
+                minutes_input.setText(ZERO);
+                hours_output.setText(ZERO);
+                hours_input.setText(ZERO);
+                
             }
         });
 
