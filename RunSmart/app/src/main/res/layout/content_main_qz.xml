@@ -12,7 +12,7 @@
     >
 
     <TextClock
-        android:id="@+id/worldtime"
+        android:id="@+id/worldTime"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
@@ -24,7 +24,7 @@
         android:layout_height="100sp">
 
         <EditText
-            android:id="@+id/check"
+            android:id="@+id/textForWeatherCheck"
             android:inputType="number"
             android:layout_width="200sp"
             android:layout_height="100sp"
@@ -36,7 +36,7 @@
             android:textColor="@color/white"></EditText>
 
         <Button
-            android:id="@+id/bt_show"
+            android:id="@+id/chkForecastBtn"
             android:text="Submit"
             android:textColor="@color/white"
             android:textSize="11sp"
@@ -48,7 +48,7 @@
 
     </LinearLayout>
 
- <!-- id and text -->
+    <!-- id and text -->
     <TextView
         android:id="@+id/instructions"
         android:layout_width="match_parent"
@@ -59,4 +59,3 @@
     </TextView>
 
 </LinearLayout>
-

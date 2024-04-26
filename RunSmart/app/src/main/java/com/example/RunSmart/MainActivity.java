@@ -4,18 +4,20 @@ import androidx.appcompat.app.AlertDialog;
 
 import android.content.DialogInterface;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.text.Editable;
+import android.text.Html;
 import android.text.TextWatcher;
+import android.view.LayoutInflater;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextClock;
 
-import java.util.List;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
-
-
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -26,6 +28,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.CountDownTimer;
 import android.util.Log;
 import android.view.View;
+
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.navigation.ui.AppBarConfiguration;
 import com.example.RunSmart.databinding.ActivityMainBinding;
 
@@ -33,7 +37,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-
 
 import com.example.RunSmart.model.getDataService;
 import com.example.RunSmart.model.item;
@@ -50,6 +53,12 @@ public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration appBarConfiguration;
     private ActivityMainBinding binding;
+
+    final String MAX_RUN_TIME_ADVICE = "Please run for a duration below 1 hr and 30 min.";
+    final String MAX_RUN_TIME_ADVICE_CHK_FORECAST = "Please run for a duration below 90 minutes.";
+    Button chkForecastBtn;
+    TextClock worldTime;
+
     private CountDownTimer countDownTimer;
     private long millis;
     SharedPreferences runningAppPref;
@@ -59,24 +68,18 @@ public class MainActivity extends AppCompatActivity {
     final String FIFTY_NINE = "59";
     final String ZERO = "00";
     public String result;
-    TextView hours_output, minutes_output, seconds_output;
-    EditText hours_input, minutes_input, seconds_input;
+    TextView hoursOutput, minutesOutput, secondsOutput;
+    EditText hoursInput, minutesInput, secondsInput;
     Button setDuration;
     Calendar calendar = Calendar.getInstance();
-    EditText check;
+    EditText textForWeatherCheck;
     long test;
     TextView guide;
-    TextView colon_betw_hours_min, colon_betw_min_sec; 
+    TextView colonBetwHoursMin, colonBetwMinSec;
 
     boolean changedInput = false;
 
-
     LinearLayout mLinearLayout;
-
-
-
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,16 +87,14 @@ public class MainActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_main);
 
-        check = findViewById(R.id.check);
+        chkForecastBtn = findViewById(R.id.chkForecastBtn);
+        worldTime = findViewById(R.id.worldTime);
 
-
-        Button Show = findViewById(R.id.bt_show);
-        TextClock world = findViewById(R.id.worldtime);
+        textForWeatherCheck = findViewById(R.id.textForWeatherCheck);
 
         mLinearLayout = (LinearLayout) findViewById(R.id.bg);
 
         final Boolean[] settingDuration = {false};
-
 
         MaterialButton play, pause, stop;
         final Boolean[] thereIsHours = { false };
@@ -109,68 +110,77 @@ public class MainActivity extends AppCompatActivity {
 
         guide = findViewById(R.id.guide);
 
-        colon_betw_hours_min = findViewById(R.id.colon_betw_hours_min);
-        colon_betw_min_sec = findViewById(R.id.colon_betw_min_sec);
+        colonBetwHoursMin = findViewById(R.id.colonBetwHoursMin);
+        colonBetwMinSec = findViewById(R.id.colonBetwMinSec);
 
-        hours_input = findViewById(R.id.hours_input);
-        hours_output = findViewById(R.id.hours_output);
+        hoursInput = findViewById(R.id.hoursInput);
+        hoursOutput = findViewById(R.id.hoursOutput);
 
-        minutes_input = findViewById(R.id.minutes_input);
-        minutes_output = findViewById(R.id.minutes_output);
+        minutesInput = findViewById(R.id.minutesInput);
+        minutesOutput = findViewById(R.id.minutesOutput);
 
-        seconds_input = findViewById(R.id.seconds_input);
-        seconds_output = findViewById(R.id.seconds_output);
+        secondsInput = findViewById(R.id.secondsInput);
+        secondsOutput = findViewById(R.id.secondsOutput);
 
         setDuration = findViewById(R.id.setDuration);
-        
+
         alert("Made by:\n- Lian Qi Zhi\n- Vinny Koh\n- Jonah Yeo");
 
+        // Close Soft Keyboard if no Text Field is Being Focused On
+        View view = this.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager inputMethodManager = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+            inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
 
-        Show.setOnClickListener(new View.OnClickListener() {
+        chkForecastBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String displayMsg="";
+                String durationTxtInDialog = "";
 
                 // text entered by the user
-                String Text = check.getText().toString();
+                String text = textForWeatherCheck.getText().toString();
 
-                Date c = Calendar.getInstance().getTime();
-                System.out.println("Current time => " + c);
+                Date dateTime = Calendar.getInstance().getTime();
+                System.out.println("Current time => " + dateTime);
 
-                SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-                String formattedDate = df.format(c);
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+                String formattedDate = simpleDateFormat.format(dateTime);
 
-                if(Text.isEmpty()){
+                if(text.isEmpty()){
                     mLinearLayout.setBackgroundResource(R.drawable.main);
                     alert("Please enter a valid input!");
-                  
-                    guide.setTextColor(Color.parseColor("#FFFFFFFF"));
-                    check.setTextColor(Color.parseColor("#FFFFFFFF"));
-                    hours_output.setTextColor(Color.parseColor("#FFFFFFFF"));
-                    hours_input.setTextColor(Color.parseColor("#FFFFFFFF"));
-                    minutes_output.setTextColor(Color.parseColor("#FFFFFFFF"));
-                    minutes_input.setTextColor(Color.parseColor("#FFFFFFFF"));
-                    seconds_output.setTextColor(Color.parseColor("#FFFFFFFF"));
-                    seconds_input.setTextColor(Color.parseColor("#FFFFFFFF"));
 
-                    check.setHintTextColor(Color.parseColor("#FFFFFFFF"));
-                    colon_betw_hours_min.setTextColor(Color.parseColor("#FFFFFFFF"));
-                    colon_betw_min_sec.setTextColor(Color.parseColor("#FFFFFFFF"));
+//                    guide.setTextColor(Color.parseColor("#FFFFFFFF"));
+//                    textForWeatherCheck.setTextColor(Color.parseColor("#FFFFFFFF"));
+//                    hoursOutput.setTextColor(Color.parseColor("#FFFFFFFF"));
+//                    hoursInput.setTextColor(Color.parseColor("#FFFFFFFF"));
+//                    minutesOutput.setTextColor(Color.parseColor("#FFFFFFFF"));
+//                    minutesInput.setTextColor(Color.parseColor("#FFFFFFFF"));
+//                    secondsOutput.setTextColor(Color.parseColor("#FFFFFFFF"));
+//                    secondsInput.setTextColor(Color.parseColor("#FFFFFFFF"));
+//
+//                    textForWeatherCheck.setHintTextColor(Color.parseColor("#FFFFFFFF"));
+//                    colonBetwHoursMin.setTextColor(Color.parseColor("#FFFFFFFF"));
+//                    colonBetwMinSec.setTextColor(Color.parseColor("#FFFFFFFF"));
 
                 }
                 else {
 
-                    int duration = Integer.parseInt(Text);
+                    int duration = Integer.parseInt(text);
 
                     if(duration > 90){
-                        alert("Please keep within 90 minutes!");
+                        alert(MAX_RUN_TIME_ADVICE_CHK_FORECAST);
                     }
                     else {
 
+                        // Close Soft Keyboard
+                        InputMethodManager inputMethodManager = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                        inputMethodManager.hideSoftInputFromWindow(mLinearLayout.getWindowToken(), 0);
 
-                        displayMsg = TimeConverter.convertMinutesToHourMinutes(duration);
+                        durationTxtInDialog = TimeConverter.convertMinutesToHourMinutes(duration);
 
-                        // TODO: Call WEATHER API HERE
+                        // Call WEATHER API HERE
                         // EXTRACT API
                         //API
                         Retrofit retrofit= retrofitClientInstance.getRetrofitInstance();
@@ -221,44 +231,15 @@ public class MainActivity extends AppCompatActivity {
 
                             }
                         });
-                        //end of API
-                        //TODO:
-                        //handle result=true and result=false
-                        //handle result=error->display error msg text or stg on next pg
-
+                        // end of API
+                        
                         try {
-
                             if (result.equals("true")) {
-                                alert( "You have chosen to run a duration of "  + displayMsg + ". It's raining now, please run another time!");
+                                showCustomDialog(true, durationTxtInDialog);
                                 mLinearLayout.setBackgroundResource(R.drawable.rain);
-                                guide.setTextColor(Color.parseColor("#FF000000"));
-                                check.setTextColor(Color.parseColor("#FF000000"));
-                                hours_output.setTextColor(Color.parseColor("#FF000000"));
-                                hours_input.setTextColor(Color.parseColor("#FF000000"));
-                                minutes_output.setTextColor(Color.parseColor("#FF000000"));
-                                minutes_input.setTextColor(Color.parseColor("#FF000000"));
-                                seconds_output.setTextColor(Color.parseColor("#FF000000"));
-                                seconds_input.setTextColor(Color.parseColor("#FF000000"));
-
-
-                                check.setHintTextColor(Color.parseColor("#6F000000")); 
-                                colon_betw_hours_min.setTextColor(Color.parseColor("#FF000000"));
-                                colon_betw_min_sec.setTextColor(Color.parseColor("#FF000000"));
                             } else if (result.equals("false")) {
-                                alert( "You have chosen to run a duration of "  + displayMsg + ". It's a good weather, have a good run!");
+                                showCustomDialog(false, durationTxtInDialog);
                                 mLinearLayout.setBackgroundResource(R.drawable.sunny);
-                                guide.setTextColor(Color.parseColor("#FF000000"));
-                                check.setTextColor(Color.parseColor("#FF000000"));
-                                hours_output.setTextColor(Color.parseColor("#FF000000"));
-                                hours_input.setTextColor(Color.parseColor("#FF000000"));
-                                minutes_output.setTextColor(Color.parseColor("#FF000000"));
-                                minutes_input.setTextColor(Color.parseColor("#FF000000"));
-                                seconds_output.setTextColor(Color.parseColor("#FF000000"));
-                                seconds_input.setTextColor(Color.parseColor("#FF000000"));
-
-                                check.setHintTextColor(Color.parseColor("#6F000000"));
-                                colon_betw_hours_min.setTextColor(Color.parseColor("#FF000000")); 
-                                colon_betw_min_sec.setTextColor(Color.parseColor("#FF000000")); 
                             } else {
                                 mLinearLayout.setBackgroundResource(R.drawable.main);
                                 Toast.makeText(getApplicationContext(), "Error! Please try again later.", Toast.LENGTH_SHORT).show();
@@ -274,13 +255,13 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-        hours_input.setVisibility(View.INVISIBLE);
-        minutes_input.setVisibility(View.INVISIBLE);
-        seconds_input.setVisibility(View.INVISIBLE);
+        hoursInput.setVisibility(View.INVISIBLE);
+        minutesInput.setVisibility(View.INVISIBLE);
+        secondsInput.setVisibility(View.INVISIBLE);
 
-        hours_output.setVisibility(View.VISIBLE);
-        minutes_output.setVisibility(View.VISIBLE);
-        seconds_output.setVisibility(View.VISIBLE);
+        hoursOutput.setVisibility(View.VISIBLE);
+        minutesOutput.setVisibility(View.VISIBLE);
+        secondsOutput.setVisibility(View.VISIBLE);
 
         final String[] forSingleDigits = new String[1];
 
@@ -298,41 +279,41 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-        check.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+        textForWeatherCheck.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean b) {
-                String checkMinutes = check.getText().toString();
-                String hours_text, minutes_text;
+                String checkMinutes = textForWeatherCheck.getText().toString();
+                String hoursText, minutesText;
                 if(!checkMinutes.equals("")){
-                    hours_text = String.valueOf(Integer.parseInt(checkMinutes) / 60);
-                    if(hours_text.length() < 2) {
-                        hours_text = "0" + hours_text;
+                    hoursText = String.valueOf(Integer.parseInt(checkMinutes) / 60);
+                    if(hoursText.length() < 2) {
+                        hoursText = "0" + hoursText;
                     }
-                    hours_output.setText(hours_text);
-                    hours_input.setText(hours_text);
+                    hoursOutput.setText(hoursText);
+                    hoursInput.setText(hoursText);
 
-                    minutes_text = String.valueOf(Integer.parseInt(checkMinutes) - (60 * (Integer.parseInt(checkMinutes) / 60)) );
-                    if(minutes_text.length() < 2) {
-                        minutes_text = "0" + minutes_text;
+                    minutesText = String.valueOf(Integer.parseInt(checkMinutes) - (60 * (Integer.parseInt(checkMinutes) / 60)) );
+                    if(minutesText.length() < 2) {
+                        minutesText = "0" + minutesText;
                     }
-                    minutes_output.setText(minutes_text);
-                    minutes_input.setText(minutes_text);
+                    minutesOutput.setText(minutesText);
+                    minutesInput.setText(minutesText);
                 }
             }
         });
 
-        if(!hours_output.getText().toString().equals(ZERO))
+        if(!hoursOutput.getText().toString().equals(ZERO))
         {
             thereIsHours[0] = true;
         }
 
-        if (!minutes_output.getText().toString().equals(ZERO))
+        if (!minutesOutput.getText().toString().equals(ZERO))
         {
             thereIsMinutes[0] = true;
         }
 
 
-        check.addTextChangedListener(new TextWatcher() {
+        textForWeatherCheck.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 changedInput = false;
@@ -354,9 +335,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                String hours_text = "";
-                String minutes_text = "";
-                String seconds_text = "";
+                String hoursText = "";
+                String minutesText = "";
+                String secondsText = "";
                 hasStop[0] = true;
                 hasPlay[0] = false;
 
@@ -367,17 +348,17 @@ public class MainActivity extends AppCompatActivity {
                 if(changedInput == true){
                     changedInput = false;
                     settingDuration[0] = false;
-                    check.clearFocus();
+                    textForWeatherCheck.clearFocus();
 
-                    String checkMinutes = check.getText().toString();
+                    String checkMinutes = textForWeatherCheck.getText().toString();
                     String hours, minutes;
                     if(!checkMinutes.equals("")){
                         hours = String.valueOf(Integer.parseInt(checkMinutes) / 60);
                         if(hours.length() < 2) {
                             hours = "0" + hours;
                         }
-                        hours_output.setText(hours);
-                        hours_input.setText(hours);
+                        hoursOutput.setText(hours);
+                        hoursInput.setText(hours);
 
                         if (Integer.parseInt(hours) > 0){
                             thereIsHours[0] = true;
@@ -387,98 +368,98 @@ public class MainActivity extends AppCompatActivity {
                         if(minutes.length() < 2) {
                             minutes = "0" + minutes;
                         }
-                        minutes_output.setText(minutes);
-                        minutes_input.setText(minutes);
+                        minutesOutput.setText(minutes);
+                        minutesInput.setText(minutes);
 
                         if (Integer.parseInt(minutes) > 0){
                             thereIsMinutes[0] = true;
                         }
 
-                        seconds_output.setText(ZERO);
-                        seconds_input.setText(ZERO);
+                        secondsOutput.setText(ZERO);
+                        secondsInput.setText(ZERO);
 
-                        hours_input.setVisibility(View.INVISIBLE);
-                        minutes_input.setVisibility(View.INVISIBLE);
-                        seconds_input.setVisibility(View.INVISIBLE);
+                        hoursInput.setVisibility(View.INVISIBLE);
+                        minutesInput.setVisibility(View.INVISIBLE);
+                        secondsInput.setVisibility(View.INVISIBLE);
 
-                        hours_output.setVisibility(View.VISIBLE);
-                        minutes_output.setVisibility(View.VISIBLE);
-                        seconds_output.setVisibility(View.VISIBLE);
+                        hoursOutput.setVisibility(View.VISIBLE);
+                        minutesOutput.setVisibility(View.VISIBLE);
+                        secondsOutput.setVisibility(View.VISIBLE);
                     }
                 }
 
                 else if (settingDuration[0] == false) {
 
-                    hours_output.setVisibility(View.INVISIBLE);
-                    minutes_output.setVisibility(View.INVISIBLE);
-                    seconds_output.setVisibility(View.INVISIBLE);
+                    hoursOutput.setVisibility(View.INVISIBLE);
+                    minutesOutput.setVisibility(View.INVISIBLE);
+                    secondsOutput.setVisibility(View.INVISIBLE);
 
-                    hours_text = hours_output.getText().toString();
-                    minutes_text = minutes_output.getText().toString();
-                    seconds_text = seconds_output.getText().toString();
+                    hoursText = hoursOutput.getText().toString();
+                    minutesText = minutesOutput.getText().toString();
+                    secondsText = secondsOutput.getText().toString();
 
-                    hours_input.setText(hours_text);
-                    minutes_input.setText(minutes_text);
-                    seconds_input.setText(seconds_text);
+                    hoursInput.setText(hoursText);
+                    minutesInput.setText(minutesText);
+                    secondsInput.setText(secondsText);
 
-                    hours_input.setVisibility(View.VISIBLE);
-                    minutes_input.setVisibility(View.VISIBLE);
-                    seconds_input.setVisibility(View.VISIBLE);
+                    hoursInput.setVisibility(View.VISIBLE);
+                    minutesInput.setVisibility(View.VISIBLE);
+                    secondsInput.setVisibility(View.VISIBLE);
 
 
-                    //https://stackoverflow.com/questions/11369479/how-to-detect-when-user-leaves-an-edittext
+                    // Useful Reference: https://stackoverflow.com/questions/11369479/how-to-detect-when-user-leaves-an-edittext
 
-                    // Each change for string lengths that are less than 2 or (more than 2 and first
+                    // Also, each change for string lengths that are less than 2 or (more than 2 and first
                     // character is 0) are all done when user directly key in the value and changes textbox.
 
-                    hours_input.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-                        String hours_text;
+                    hoursInput.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                        String hoursText;
 
                         @Override
                         public void onFocusChange(View view, boolean b) {
-                            hours_text = hours_input.getText().toString();
-                            if(hours_text.length() < 2){
-                                forSingleDigits[0] = "0" + hours_text;
-                                hours_input.setText(forSingleDigits[0]);
+                            hoursText = hoursInput.getText().toString();
+                            if(hoursText.length() < 2){
+                                forSingleDigits[0] = "0" + hoursText;
+                                hoursInput.setText(forSingleDigits[0]);
                             }
 
-                            else if(hours_text.length() > 2 && hours_text.charAt(0) == '0'){
-                                forSingleDigits[0] = hours_text.substring(1);
-                                hours_input.setText(forSingleDigits[0]);
+                            else if(hoursText.length() > 2 && hoursText.charAt(0) == '0'){
+                                forSingleDigits[0] = hoursText.substring(1);
+                                hoursInput.setText(forSingleDigits[0]);
                             }
                         }
                     });
 
-                    minutes_input.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-                        String minutes_text;
+                    minutesInput.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                        String minutesText;
 
                         @Override
                         public void onFocusChange(View view, boolean b) {
-                            minutes_text = minutes_input.getText().toString();
-                            if(minutes_text.length() < 2){
-                                forSingleDigits[0] = "0" + minutes_text;
-                                minutes_input.setText(forSingleDigits[0]);
+                            minutesText = minutesInput.getText().toString();
+                            if(minutesText.length() < 2){
+                                forSingleDigits[0] = "0" + minutesText;
+                                minutesInput.setText(forSingleDigits[0]);
                             }
-                            else if(minutes_text.length() > 2 && minutes_text.charAt(0) == '0'){
-                                forSingleDigits[0] = minutes_text.substring(1);
-                                minutes_input.setText(forSingleDigits[0]);
+                            else if(minutesText.length() > 2 && minutesText.charAt(0) == '0'){
+                                forSingleDigits[0] = minutesText.substring(1);
+                                minutesInput.setText(forSingleDigits[0]);
                             }
                         }
                     });
 
-                    seconds_input.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-                        String seconds_text;
+                    secondsInput.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                        String secondsText;
 
                         @Override
                         public void onFocusChange(View view, boolean b) {
-                            seconds_text = seconds_input.getText().toString();
-                            if(seconds_text.length() < 2){
-                                forSingleDigits[0] = "0" + seconds_text;
-                                seconds_input.setText(forSingleDigits[0]);
+                            secondsText = secondsInput.getText().toString();
+                            if(secondsText.length() < 2){
+                                forSingleDigits[0] = "0" + secondsText;
+                                secondsInput.setText(forSingleDigits[0]);
                             }
-                            else if(seconds_text.length() > 2 && seconds_text.charAt(0) == '0'){
-                                forSingleDigits[0] = seconds_text.substring(1);
-                                seconds_input.setText(forSingleDigits[0]);
+                            else if(secondsText.length() > 2 && secondsText.charAt(0) == '0'){
+                                forSingleDigits[0] = secondsText.substring(1);
+                                secondsInput.setText(forSingleDigits[0]);
                             }
                         }
                     });
@@ -488,89 +469,95 @@ public class MainActivity extends AppCompatActivity {
 
                 else{
 
-                    if(Integer.parseInt(hours_input.getText().toString()) > 1 || (Integer.parseInt(hours_input.getText().toString()) == 1 && Integer.parseInt(minutes_input.getText().toString()) > 30)){
-                        Toast.makeText(getApplicationContext(), "Please set a duration below 1 hr and 30 min.", Toast.LENGTH_LONG).show();
+                    if(Integer.parseInt(hoursInput.getText().toString()) > 1 || (Integer.parseInt(hoursInput.getText().toString()) == 1 && Integer.parseInt(minutesInput.getText().toString()) > 30)){
+                        Toast.makeText(getApplicationContext(), MAX_RUN_TIME_ADVICE, Toast.LENGTH_LONG).show();
 
                     }
 
                     else {
-                        hours_input.setVisibility(View.INVISIBLE);
-                        minutes_input.setVisibility(View.INVISIBLE);
-                        seconds_input.setVisibility(View.INVISIBLE);
+                        hoursInput.setVisibility(View.INVISIBLE);
+                        minutesInput.setVisibility(View.INVISIBLE);
+                        secondsInput.setVisibility(View.INVISIBLE);
 
-                        hours_text = hours_input.getText().toString();
-                        minutes_text = minutes_input.getText().toString();
-                        seconds_text = seconds_input.getText().toString();
+                        hoursText = hoursInput.getText().toString();
+                        minutesText = minutesInput.getText().toString();
+                        secondsText = secondsInput.getText().toString();
 
 
                         // Each change for string lengths that are less than 2 or (more than 2 and first character
                         // is 0) are all done when user directly key in the value and press SET DURATION.
 
-                        if (Integer.parseInt(hours_text) < 10 && hours_text.length() < 2) {
+                        if (Integer.parseInt(hoursText) < 10 && hoursText.length() < 2) {
 
-                            forSingleDigits[0] = "0" + hours_text;
-                            hours_output.setText(forSingleDigits[0]);
-                        } else if (hours_text.length() > 2 && hours_text.charAt(0) == '0') {
-                            forSingleDigits[0] = hours_text.substring(1);
-                            hours_output.setText(forSingleDigits[0]);
+                            forSingleDigits[0] = "0" + hoursText;
+                            hoursOutput.setText(forSingleDigits[0]);
+                        } else if (hoursText.length() > 2 && hoursText.charAt(0) == '0') {
+                            forSingleDigits[0] = hoursText.substring(1);
+                            hoursOutput.setText(forSingleDigits[0]);
                         } else {
-                            hours_output.setText(hours_text);
+                            hoursOutput.setText(hoursText);
                         }
 
-                        if (!hours_text.equals(ZERO)) {
+                        if (!hoursText.equals(ZERO)) {
                             thereIsHours[0] = true;
                         }
 
 
-                        if (Integer.parseInt(minutes_text) > 59) {
+                        // Would not change hours value if minutes value is more than 59, in case user has set hours value beforehand. Prevents user error.
+                        if (Integer.parseInt(minutesText) > 59) {
                             Toast.makeText(getApplicationContext(), "Please set value for minutes within range of 0 to 59 minutes.", Toast.LENGTH_LONG).show();
-                            minutes_output.setText(ZERO);
+                            minutesOutput.setText(ZERO);
                         } else {
 
-                            if (Integer.parseInt(minutes_text) < 10 && minutes_text.length() < 2) {
+                            if (Integer.parseInt(minutesText) < 10 && minutesText.length() < 2) {
 
-                                forSingleDigits[0] = "0" + minutes_text;
-                                minutes_output.setText(forSingleDigits[0]);
-                            } else if (minutes_text.length() > 2 && minutes_text.charAt(0) == '0') {
-                                forSingleDigits[0] = minutes_text.substring(1);
-                                minutes_input.setText(forSingleDigits[0]);
+                                forSingleDigits[0] = "0" + minutesText;
+                                minutesOutput.setText(forSingleDigits[0]);
+                            } else if (minutesText.length() > 2 && minutesText.charAt(0) == '0') {
+                                forSingleDigits[0] = minutesText.substring(1);
+                                minutesInput.setText(forSingleDigits[0]);
                             } else {
-                                minutes_output.setText(minutes_text);
+                                minutesOutput.setText(minutesText);
                             }
 
-                            if (!minutes_text.equals(ZERO)) {
+                            if (!minutesText.equals(ZERO)) {
                                 thereIsMinutes[0] = true;
                             }
                         }
 
-
-                        if (Integer.parseInt(seconds_text) > 59) {
+                        // Would not change minutes or hours values if seconds value is more than 59, in case user has set minutes or hours values beforehand. Prevents user error.
+                        if (Integer.parseInt(secondsText) > 59) {
                             Toast.makeText(getApplicationContext(), "Please set value for seconds within range of 0 to 59 seconds.", Toast.LENGTH_LONG).show();
-                            seconds_output.setText(ZERO);
+                            secondsOutput.setText(ZERO);
                         } else {
 
-                            if (Integer.parseInt(seconds_text) < 10 && seconds_text.length() < 2) {
+                            if (Integer.parseInt(secondsText) < 10 && secondsText.length() < 2) {
 
-                                forSingleDigits[0] = "0" + seconds_text;
-                                seconds_output.setText(forSingleDigits[0]);
-                            } else if (seconds_text.length() > 2 && seconds_text.charAt(0) == '0') {
-                                forSingleDigits[0] = seconds_text.substring(1);
-                                seconds_input.setText(forSingleDigits[0]);
+                                forSingleDigits[0] = "0" + secondsText;
+                                secondsOutput.setText(forSingleDigits[0]);
+                            } else if (secondsText.length() > 2 && secondsText.charAt(0) == '0') {
+                                forSingleDigits[0] = secondsText.substring(1);
+                                secondsInput.setText(forSingleDigits[0]);
                             } else {
-                                seconds_output.setText(seconds_text);
+                                secondsOutput.setText(secondsText);
                             }
 
-                            if (!seconds_text.equals(ZERO)) {
+                            if (!secondsText.equals(ZERO)) {
                                 thereIsSeconds[0] = true;
                             }
                         }
 
 
-                        hours_output.setVisibility(View.VISIBLE);
-                        minutes_output.setVisibility(View.VISIBLE);
-                        seconds_output.setVisibility(View.VISIBLE);
+                        hoursOutput.setVisibility(View.VISIBLE);
+                        minutesOutput.setVisibility(View.VISIBLE);
+                        secondsOutput.setVisibility(View.VISIBLE);
 
-                        check.setText(String.valueOf(Integer.parseInt(hours_output.getText().toString()) * 60 + Integer.parseInt(minutes_output.getText().toString())));
+                        textForWeatherCheck.setText(String.valueOf(Integer.parseInt(hoursOutput.getText().toString()) * 60 + Integer.parseInt(minutesOutput.getText().toString())));
+
+                        // Close Soft Keyboard
+                        InputMethodManager inputMethodManager = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                        inputMethodManager.hideSoftInputFromWindow(mLinearLayout.getWindowToken(), 0);
+
 
                         settingDuration[0] = false;
                         changedInput = false;
@@ -595,9 +582,9 @@ public class MainActivity extends AppCompatActivity {
                     hasStop[0] = false;
                     hasPause[0] = false;
 
-                    currentSeconds[0] = Integer.parseInt(seconds_output.getText().toString());
-                    currentMinutes[0] = Integer.parseInt(minutes_output.getText().toString());
-                    currentHours[0] = Integer.parseInt(hours_output.getText().toString());
+                    currentSeconds[0] = Integer.parseInt(secondsOutput.getText().toString());
+                    currentMinutes[0] = Integer.parseInt(minutesOutput.getText().toString());
+                    currentHours[0] = Integer.parseInt(hoursOutput.getText().toString());
 
                     final long[] millis_forSeconds = { currentSeconds[0] * 1000 + currentHours[0] * 3600000 + currentMinutes[0] * 60000 };
                     final long[] millis_forMinutes = { currentMinutes[0] * 60000 };
@@ -607,7 +594,7 @@ public class MainActivity extends AppCompatActivity {
 
                         if (hasPlay[0] == false) {
 
-                            check.setText("");
+                            textForWeatherCheck.setText("");
 
                             hasPlay[0] = true;
 
@@ -631,14 +618,14 @@ public class MainActivity extends AppCompatActivity {
 
                                         if (currentSeconds[0] < 10) {
                                             forSingleDigits[0] = "0" + currentSeconds[0];
-                                            seconds_output.setText(forSingleDigits[0]);
+                                            secondsOutput.setText(forSingleDigits[0]);
                                         } else {
-                                            seconds_output.setText(String.valueOf(currentSeconds[0]));
+                                            secondsOutput.setText(String.valueOf(currentSeconds[0]));
 
                                         }
 
 
-                                        currentSeconds[0] = Integer.parseInt(seconds_output.getText().toString());
+                                        currentSeconds[0] = Integer.parseInt(secondsOutput.getText().toString());
 
 
                                         if (currentSeconds[0] == 0) {
@@ -646,7 +633,7 @@ public class MainActivity extends AppCompatActivity {
                                         }
                                     } else if (thereIsMinutes[0] != false) {
 
-                                        seconds_output.setText(FIFTY_NINE);
+                                        secondsOutput.setText(FIFTY_NINE);
                                         thereIsSeconds[0] = true;
                                         currentSeconds[0] = 59;
 
@@ -657,14 +644,14 @@ public class MainActivity extends AppCompatActivity {
 
                                         if (currentMinutes[0] < 10) {
                                             forSingleDigits[0] = "0" + currentMinutes[0];
-                                            minutes_output.setText(forSingleDigits[0]);
+                                            minutesOutput.setText(forSingleDigits[0]);
                                         } else {
-                                            minutes_output.setText(String.valueOf(currentMinutes[0]));
+                                            minutesOutput.setText(String.valueOf(currentMinutes[0]));
 
                                         }
 
 
-                                        currentMinutes[0] = Integer.parseInt(minutes_output.getText().toString());
+                                        currentMinutes[0] = Integer.parseInt(minutesOutput.getText().toString());
                                         Log.i("One minute passed", " Now currentMinutes is " + String.valueOf(currentMinutes[0]));
 
 
@@ -674,11 +661,11 @@ public class MainActivity extends AppCompatActivity {
                                     } else if (thereIsHours[0] != false) {
 
 
-                                        minutes_output.setText(FIFTY_NINE);
+                                        minutesOutput.setText(FIFTY_NINE);
                                         thereIsMinutes[0] = true;
                                         currentMinutes[0] = 59;
 
-                                        seconds_output.setText(FIFTY_NINE);
+                                        secondsOutput.setText(FIFTY_NINE);
                                         thereIsSeconds[0] = true;
                                         currentSeconds[0] = 59;
 
@@ -689,14 +676,14 @@ public class MainActivity extends AppCompatActivity {
 
                                         if (currentHours[0] < 10) {
                                             forSingleDigits[0] = "0" + currentHours[0];
-                                            hours_output.setText(forSingleDigits[0]);
+                                            hoursOutput.setText(forSingleDigits[0]);
                                         } else {
-                                            hours_output.setText(String.valueOf(currentHours[0]));
+                                            hoursOutput.setText(String.valueOf(currentHours[0]));
 
                                         }
 
 
-                                        currentHours[0] = Integer.parseInt(hours_output.getText().toString());
+                                        currentHours[0] = Integer.parseInt(hoursOutput.getText().toString());
                                         Log.i("One hour passed", " Now currentHours is " + String.valueOf(currentHours[0]));
 
                                         if (currentHours[0] == 0) {
@@ -749,7 +736,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-      
+
                 if (countDownTimer != null) {
                     countDownTimer.cancel();
                 }
@@ -757,19 +744,64 @@ public class MainActivity extends AppCompatActivity {
                 hasStop[0] = true;
                 hasPause[0] = false;
                 hasPlay[0] = false;
-                seconds_output.setText(ZERO);
-                seconds_input.setText(ZERO);
-                minutes_output.setText(ZERO);
-                minutes_input.setText(ZERO);
-                hours_output.setText(ZERO);
-                hours_input.setText(ZERO);
-
-
+                secondsOutput.setText(ZERO);
+                secondsInput.setText(ZERO);
+                minutesOutput.setText(ZERO);
+                minutesInput.setText(ZERO);
+                hoursOutput.setText(ZERO);
+                hoursInput.setText(ZERO);
+                textForWeatherCheck.setText("");
             }
 
         });
 
 
+    }
+
+    private void showCustomDialog(boolean hasRain, String durationTxtInDialog){
+
+        final String DIALOG_DESC_START = "You have chosen to run a duration of:";
+        final String RAIN_ADVICE = "It's <b>raining</b> during your run, please run another time!";
+        final String SUNNY_ADVICE = "It's a <b>good weather</b>, have a good run!";
+        String adviceText = "";
+        String htmlText = "";
+
+        ConstraintLayout dialogConstraintLayout = findViewById(R.id.dialogConstraintLayout);
+        View view = LayoutInflater.from(MainActivity.this).inflate(R.layout.forecast_dialog, dialogConstraintLayout);
+        Button dialogCloseBtn = view.findViewById(R.id.dialogCloseBtn);
+
+        ImageView weatherIcon = view.findViewById(R.id.weatherIcon);
+        TextView dialogDesc = view.findViewById(R.id.dialogDesc);
+
+        if(hasRain){
+            weatherIcon.setImageResource(R.drawable.rain_icon);
+            adviceText = RAIN_ADVICE;
+        }
+        else{
+            weatherIcon.setImageResource(R.drawable.sun_icon);
+            adviceText = SUNNY_ADVICE;
+        }
+
+        htmlText = DIALOG_DESC_START + "<h1><b>" + durationTxtInDialog + "</b></h1>" + adviceText;
+
+        dialogDesc.setText(Html.fromHtml(htmlText));
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+        builder.setView(view);
+        final AlertDialog alertDialog = builder.create();
+
+        dialogCloseBtn.findViewById(R.id.dialogCloseBtn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                alertDialog.dismiss();
+            }
+        });
+
+        if (alertDialog.getWindow() != null){
+            alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
+        }
+
+        alertDialog.show();
     }
 
 
@@ -830,9 +862,9 @@ public class MainActivity extends AppCompatActivity {
         if (countDownTimer != null) {
             countDownTimer.cancel();
         }
-        runningAppPrefEditor.putString(SECONDS_KEY, seconds_output.getText().toString());
-        runningAppPrefEditor.putString(MINUTES_KEY, minutes_output.getText().toString());
-        runningAppPrefEditor.putString(HOURS_KEY, hours_output.getText().toString());
+        runningAppPrefEditor.putString(SECONDS_KEY, secondsOutput.getText().toString());
+        runningAppPrefEditor.putString(MINUTES_KEY, minutesOutput.getText().toString());
+        runningAppPrefEditor.putString(HOURS_KEY, hoursOutput.getText().toString());
         runningAppPrefEditor.apply();
 
         Log.i("MainActivity: ", "onPause");
